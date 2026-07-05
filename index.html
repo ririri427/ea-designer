@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EA Designer | プログラミング不要のMT4自動売買EA作成ツール</title>
+<style>
+  :root {
+    --bg: #0d0f16;
+    --bg2: #12141c;
+    --panel: #1b1f2b;
+    --panel2: #232838;
+    --border: #2c324a;
+    --text: #eef0f4;
+    --muted: #a3abc4;
+    --accent: #4f7cff;
+    --buy: #2e9ee8;
+    --sell: #ff6fa5;
+    --success: #3dd68c;
+    --gold: #ffc93c;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Yu Gothic UI", "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+    line-height: 1.8;
+  }
+  img { max-width: 100%; display: block; }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
+  a.cta {
+    display: inline-block;
+    background: linear-gradient(90deg, var(--buy), var(--accent), var(--sell));
+    color: #06070c;
+    font-weight: bold;
+    padding: 16px 40px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-size: 17px;
+    box-shadow: 0 8px 24px rgba(79,124,255,0.25);
+  }
+  a.cta.secondary {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+    box-shadow: none;
+  }
+
+  /* Hero */
+  header.hero {
+    padding: 90px 0 70px;
+    text-align: center;
+    background:
+      radial-gradient(ellipse 900px 500px at 20% -10%, rgba(46,158,232,0.16), transparent),
+      radial-gradient(ellipse 900px 500px at 80% -10%, rgba(255,111,165,0.14), transparent);
+    border-bottom: 1px solid var(--border);
+  }
+  header.hero .eyebrow {
+    display: inline-block;
+    padding: 5px 16px;
+    border-radius: 999px;
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    color: var(--gold);
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 22px;
+  }
+  header.hero h1 {
+    font-size: 42px;
+    margin: 0 0 18px;
+    line-height: 1.4;
+  }
+  header.hero h1 .brand {
+    background: linear-gradient(90deg, var(--buy), var(--accent), var(--sell));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  header.hero p.lead {
+    font-size: 17px;
+    color: var(--muted);
+    max-width: 640px;
+    margin: 0 auto 34px;
+  }
+  header.hero .shot {
+    margin-top: 56px;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+  }
+
+  section { padding: 84px 0; }
+  section.alt { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  section h2 {
+    font-size: 28px;
+    text-align: center;
+    margin: 0 0 12px;
+  }
+  section p.section-lead {
+    text-align: center;
+    color: var(--muted);
+    max-width: 620px;
+    margin: 0 auto 48px;
+  }
+
+  .cols3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+  .cols2 { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  @media (max-width: 800px) {
+    .cols3, .cols2 { grid-template-columns: 1fr; }
+    header.hero h1 { font-size: 30px; }
+  }
+
+  .feature-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 26px;
+  }
+  .feature-card .icon { font-size: 26px; margin-bottom: 12px; }
+  .feature-card h3 { margin: 0 0 8px; font-size: 17px; }
+  .feature-card p { margin: 0; color: var(--muted); font-size: 14px; }
+
+  /* 3 ways */
+  .way {
+    display: flex;
+    gap: 22px;
+    align-items: flex-start;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .way:last-child { border-bottom: none; }
+  .way .num {
+    flex-shrink: 0;
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: bold;
+    color: var(--gold);
+  }
+  .way h3 { margin: 0 0 6px; font-size: 16.5px; }
+  .way p { margin: 0; color: var(--muted); font-size: 14px; }
+
+  /* Diff table */
+  table.diff { width: 100%; border-collapse: collapse; background: var(--panel); border-radius: 14px; overflow: hidden; border: 1px solid var(--border); }
+  table.diff th, table.diff td { padding: 16px 20px; font-size: 14px; border-bottom: 1px solid var(--border); text-align: center; }
+  table.diff th { background: var(--panel2); color: var(--muted); font-weight: 600; }
+  table.diff td:first-child, table.diff th:first-child { text-align: left; color: var(--muted); }
+  table.diff td.good { color: var(--success); font-weight: bold; }
+  table.diff td.bad { color: #f28b8b; }
+  table.diff tr.highlight td { background: rgba(79,124,255,0.06); }
+
+  /* Pricing */
+  .price-card {
+    max-width: 480px;
+    margin: 0 auto;
+    background: linear-gradient(180deg, var(--panel), var(--panel2));
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 44px 40px;
+    text-align: center;
+  }
+  .price-card .label { color: var(--muted); font-size: 14px; margin-bottom: 6px; }
+  .price-card .amount { font-size: 48px; font-weight: bold; margin-bottom: 4px; }
+  .price-card .amount small { font-size: 16px; color: var(--muted); font-weight: normal; }
+  .price-card .note { color: var(--gold); font-size: 13px; margin-bottom: 26px; }
+  .price-card ul { text-align: left; list-style: none; padding: 0; margin: 0 0 30px; }
+  .price-card ul li { padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14.5px; }
+  .price-card ul li:last-child { border-bottom: none; }
+  .price-card ul li::before { content: "✓ "; color: var(--success); font-weight: bold; }
+
+  /* FAQ */
+  .faq-item { border-bottom: 1px solid var(--border); padding: 20px 0; }
+  .faq-item:last-child { border-bottom: none; }
+  .faq-item .q { font-weight: bold; margin-bottom: 6px; }
+  .faq-item .a { color: var(--muted); font-size: 14.5px; margin: 0; }
+
+  footer {
+    text-align: center;
+    padding: 40px 0;
+    color: var(--muted);
+    font-size: 12.5px;
+  }
+  footer a { color: var(--muted); }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">MT4 自動売買EA作成ツール</div>
+    <h1><span class="brand">EA Designer</span><br>プログラミング知識ゼロで、<br>売り物になるEAを自分の手で。</h1>
+    <p class="lead">GUIでクリックして組み立てるか、日本語で戦略を説明するだけ。MetaEditorを一切開かずに、MT4用の自動売買EA(.mq4/.ex4)を作成できます。</p>
+    <a class="cta" href="#pricing">今すぐ購入する(¥19,800・買い切り)</a>
+    <div class="shot">
+      <img src="hero.png" alt="EA Designer 画面キャプチャ">
+    </div>
+  </div>
+</header>
+
+<section id="ways">
+  <div class="wrap">
+    <h2>3つの作り方</h2>
+    <p class="section-lead">初心者はAI任せ、慣れてきたらGUIで細かく調整。あなたのペースで使えます。</p>
+    <div class="way">
+      <div class="num">1</div>
+      <div>
+        <h3>GUIでクリックして組み立てる</h3>
+        <p>インジケーターの追加、エントリー/決済条件、資金管理まで、すべて画面上のクリックと数値入力だけで完結します。組み立てるたびに、日本語の文章で「今どういう条件になっているか」がリアルタイムに表示されるので、迷いません。</p>
+      </div>
+    </div>
+    <div class="way">
+      <div class="num">2</div>
+      <div>
+        <h3>日本語で説明するだけ</h3>
+        <p>「20期間と50期間の移動平均線がゴールデンクロスしたら買い。RSIが70以上の時は買わない。」と入力するだけで、AIが自動でEAを組み立てます。すでに設定済みの資金管理設定は自動的に引き継がれるので、毎回入力し直す必要はありません。</p>
+      </div>
+    </div>
+    <div class="way">
+      <div class="num">3</div>
+      <div>
+        <h3>組み立てた後もAIで微調整</h3>
+        <p>「金曜の午後は取引しないようにして」のような追加指示を日本語で入力すると、AIが既存のEAを壊さずに部分修正します。GUIとAI、どちらからでも自由に行き来できます。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="alt" id="features">
+  <div class="wrap">
+    <h2>本気で作り込んだ機能</h2>
+    <p class="section-lead">競合ツールを研究し、抜け漏れがないよう1つずつ設計しました。</p>
+    <div class="cols3">
+      <div class="feature-card">
+        <div class="icon">📈</div>
+        <h3>MT4標準インジケーターほぼ全種類</h3>
+        <p>移動平均線・RSI・MACD・ボリンジャーバンド・一目均衡表・ストキャスティクスなど、主要インジケーターを網羅。同じ種類を複数設置してのクロス判定にも対応。</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">🧩</div>
+        <h3>複数エントリーブロック</h3>
+        <p>「保有数が0ならこの条件、1ならこの条件」のような、ポジション数ごとに異なるロジックを組めます。ナンピン・グリッド系の複雑な戦略にも対応。</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">🌍</div>
+        <h3>他通貨ペア・他時間足を参照</h3>
+        <p>上位足のトレンドを見ながら下位足でエントリー、といったマルチタイムフレーム戦略も設定可能。ブローカー独自の銘柄サフィックスにも自動対応。</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">🛡️</div>
+        <h3>不正コピー対策の各種ロック</h3>
+        <p>通貨ペア・時間足・口座番号を指定してロックする機能を搭載。パラメーターとして表に出さず、コードに直接埋め込むため簡単には外せません。</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">🎯</div>
+        <h3>柔軟なナンピン設定</h3>
+        <p>買い・売りをそれぞれ個別に、ステップごとのpips幅・ロット倍率まで細かく設定可能。</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">🚀</div>
+        <h3>ワンボタンバックテスト</h3>
+        <p>通貨ペア・期間・初期資金を指定するだけで、コンパイルからMT4ストラテジーテスターの起動まで自動化。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="diff">
+  <div class="wrap">
+    <h2>他社ツールとの違い</h2>
+    <p class="section-lead">AIによるEA生成は、本来API利用料がかかる機能です。多くのツールは月額課金やAPIキーの自己準備を求めますが、EA Designerはその負担をこちらで引き受けています。</p>
+    <table class="diff">
+      <tr>
+        <th></th>
+        <th>EA Designer</th>
+        <th>よくある他社ツール</th>
+      </tr>
+      <tr class="highlight">
+        <td>料金体系</td>
+        <td class="good">買い切り・追加費用なし</td>
+        <td class="bad">月額課金 or API従量課金</td>
+      </tr>
+      <tr>
+        <td>AI生成の利用料</td>
+        <td class="good">無制限・追加負担なし</td>
+        <td class="bad">自分でAPIキーを用意/都度課金</td>
+      </tr>
+      <tr>
+        <td>使用期限</td>
+        <td class="good">なし(買い切り)</td>
+        <td class="bad">サブスク停止で使用不可に</td>
+      </tr>
+      <tr>
+        <td>日本語でのGUI/説明</td>
+        <td class="good">完全日本語対応</td>
+        <td class="bad">英語UIのみのことも</td>
+      </tr>
+    </table>
+  </div>
+</section>
+
+<section class="alt" id="pricing">
+  <div class="wrap">
+    <h2>価格</h2>
+    <p class="section-lead">買い切り型。月額費用も、AI利用のための追加課金もありません。</p>
+    <div class="price-card">
+      <div class="label">EA Designer 買い切りライセンス</div>
+      <div class="amount">¥19,800 <small>(税込・一括)</small></div>
+      <div class="note">AI生成にかかる本来のAPI利用コストは運営側が負担しています</div>
+      <ul>
+        <li>ダウンロード後、すぐに使い放題(期限なし)</li>
+        <li>GUI組み立て・AI日本語生成、両方とも無制限に利用可能</li>
+        <li>MT4標準インジケーターほぼ全種類に対応</li>
+        <li>ワンボタンバックテスト機能つき</li>
+        <li>取扱説明書つき</li>
+      </ul>
+      <a class="cta" href="docs.html">まずは取扱説明書を見てみる</a>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <h2>よくある質問</h2>
+    <div class="faq-item">
+      <div class="q">プログラミングの知識は本当に不要ですか？</div>
+      <p class="a">はい。GUIでのクリック操作か、日本語での説明文だけでEAが完成します。MQL4のコードを直接書く必要はありません。</p>
+    </div>
+    <div class="faq-item">
+      <div class="q">AIを使うと追加で料金がかかりますか？</div>
+      <p class="a">かかりません。買い切り価格の中に含まれており、使い放題です。</p>
+    </div>
+    <div class="faq-item">
+      <div class="q">Mac版はありますか？</div>
+      <p class="a">現在はWindows版のみの提供です。</p>
+    </div>
+    <div class="faq-item">
+      <div class="q">返金やサポートはありますか？</div>
+      <p class="a">サポートなし・返金不可でのご提供となります。ご了承の上でご購入ください。生成したEAは、必ずデモ口座で十分に検証してから実運用してください。</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    EA Designer &mdash; MT4自動売買EA作成ツール ｜ <a href="docs.html">取扱説明書</a>
+  </div>
+</footer>
+
+</body>
+</html>

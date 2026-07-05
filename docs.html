@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EA Designer 取扱説明書</title>
+<style>
+  :root {
+    --bg: #12141c;
+    --panel: #1b1f2b;
+    --panel2: #232838;
+    --border: #303650;
+    --text: #e8eaed;
+    --muted: #98a0b8;
+    --accent: #4f7cff;
+    --buy: #2e9ee8;
+    --sell: #ff6fa5;
+    --success: #3dd68c;
+    --danger: #e5484d;
+    --gold: #ffc93c;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Yu Gothic UI", "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+    line-height: 1.8;
+  }
+  a { color: var(--accent); }
+  .layout {
+    display: flex;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  nav.sidebar {
+    position: sticky;
+    top: 0;
+    align-self: flex-start;
+    width: 250px;
+    flex-shrink: 0;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 28px 16px;
+    border-right: 1px solid var(--border);
+  }
+  nav.sidebar .brand {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 4px;
+    background: linear-gradient(90deg, var(--buy), var(--accent), var(--sell));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  nav.sidebar .subtitle {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+  nav.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  nav.sidebar li a {
+    display: block;
+    padding: 7px 10px;
+    border-radius: 6px;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13.5px;
+  }
+  nav.sidebar li a:hover {
+    background: var(--panel2);
+    color: var(--text);
+  }
+  nav.sidebar li.sub a {
+    padding-left: 22px;
+    font-size: 12.5px;
+  }
+  main {
+    flex: 1;
+    min-width: 0;
+    padding: 40px 48px 100px;
+  }
+  header.hero {
+    padding-bottom: 28px;
+    margin-bottom: 28px;
+    border-bottom: 1px solid var(--border);
+  }
+  header.hero h1 {
+    font-size: 30px;
+    margin: 0 0 8px;
+  }
+  header.hero p {
+    color: var(--muted);
+    margin: 0;
+  }
+  section {
+    margin-bottom: 48px;
+    scroll-margin-top: 20px;
+  }
+  section h2 {
+    font-size: 22px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--accent);
+    display: inline-block;
+    margin-bottom: 18px;
+  }
+  section h3 {
+    font-size: 17px;
+    margin-top: 28px;
+    margin-bottom: 10px;
+    color: var(--gold);
+  }
+  section h3.buy { color: var(--buy); }
+  section h3.sell { color: var(--sell); }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+  }
+  .card + .card { margin-top: 12px; }
+  .grid2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 900px) {
+    .grid2 { grid-template-columns: 1fr; }
+    nav.sidebar { display: none; }
+    main { padding: 24px; }
+  }
+  code, .code-inline {
+    background: #0d0f16;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-family: "Consolas", monospace;
+    font-size: 0.92em;
+    color: var(--gold);
+  }
+  pre {
+    background: #0d0f16;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    overflow-x: auto;
+    font-family: "Consolas", monospace;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+  }
+  th, td {
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+  }
+  th { color: var(--muted); font-weight: 600; }
+  ul.feature-list { padding-left: 20px; }
+  ul.feature-list li { margin-bottom: 6px; }
+  .badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  .badge.buy { background: rgba(46,158,232,0.18); color: var(--buy); }
+  .badge.sell { background: rgba(255,111,165,0.18); color: var(--sell); }
+  .note {
+    border-left: 3px solid var(--gold);
+    background: rgba(255,201,60,0.07);
+    padding: 12px 16px;
+    border-radius: 0 8px 8px 0;
+    font-size: 14px;
+    margin: 12px 0;
+  }
+  .warn {
+    border-left: 3px solid var(--danger);
+    background: rgba(229,72,77,0.08);
+    padding: 12px 16px;
+    border-radius: 0 8px 8px 0;
+    font-size: 14px;
+    margin: 12px 0;
+  }
+  .faq-q { font-weight: bold; color: var(--text); margin-top: 16px; }
+  .faq-a { color: var(--muted); margin-top: 4px; }
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    padding: 30px 0;
+    border-top: 1px solid var(--border);
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+  <nav class="sidebar">
+    <div class="brand">EA Designer</div>
+    <div class="subtitle">取扱説明書</div>
+    <ul>
+      <li><a href="#overview">はじめに</a></li>
+      <li><a href="#three-ways">3つの作り方</a></li>
+      <li><a href="#basic-settings">基本設定</a></li>
+      <li class="sub"><a href="#lot">ロット計算</a></li>
+      <li class="sub"><a href="#sl-tp-trail">SL/TP・トレーリング</a></li>
+      <li class="sub"><a href="#positions">同時保有数・両建て</a></li>
+      <li class="sub"><a href="#nanpin">ナンピン設定</a></li>
+      <li class="sub"><a href="#advanced">安全装置・フィルター設定</a></li>
+      <li><a href="#indicators">インジケーター</a></li>
+      <li><a href="#conditions">条件エディタ</a></li>
+      <li class="sub"><a href="#operand-kinds">オペランドの種類</a></li>
+      <li class="sub"><a href="#operators">比較演算子</a></li>
+      <li class="sub"><a href="#multi-symbol">他通貨ペア・他時間足参照</a></li>
+      <li class="sub"><a href="#multi-block">複数エントリーブロック</a></li>
+      <li class="sub"><a href="#trailing-condition">条件式トレーリング</a></li>
+      <li><a href="#ai-mode">AI入力モード</a></li>
+      <li><a href="#preview">プレビュー・保存・コンパイル確認</a></li>
+      <li><a href="#backtest">バックテスト</a></li>
+      <li><a href="#faq">よくあるトラブル</a></li>
+      <li><a href="#notice">注意事項</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <header class="hero" id="overview">
+      <h1>EA Designer 取扱説明書</h1>
+      <p>MT4(MetaTrader4)用の自動売買EA(エキスパートアドバイザー)を、プログラミング知識なしで作成できるソフトです。このページでは、全ての機能を漏れなく説明します。</p>
+    </header>
+
+    <section id="three-ways">
+      <h2>3つの作り方</h2>
+      <div class="card">
+        <ul class="feature-list">
+          <li><strong>① GUIで選ぶ</strong> — インジケーターや条件をクリックで選んで組み立てる、一番確実な方法です。</li>
+          <li><strong>② 日本語で説明する</strong> — 「20日線と50日線がゴールデンクロスしたら買い、RSIが70以上の時は買わない」のように日本語で説明するだけで、AIが自動でEAを組み立てます。</li>
+          <li><strong>③ ①と②の組み合わせ</strong> — 日本語で大枠を作ってから、GUIで細かく調整することもできます。逆に、GUIで組み立てた後に「既存の内容を修正する」モードで、AIに部分的な修正を指示することもできます。</li>
+        </ul>
+        <div class="note">どの作り方でも、最終的には同じ1つの設計図(EA仕様)を扱うため、途中でやり方を変えても内容が失われることはありません。</div>
+      </div>
+    </section>
+
+    <section id="basic-settings">
+      <h2>基本設定</h2>
+      <p>資金管理・決済・フィルターなど、EA全体の土台となる設定です。画面上部にまとまっています。</p>
+
+      <h3 id="lot">ロット計算</h3>
+      <div class="card">
+        <table>
+          <tr><th>判定タイミング</th><td>「リアルタイム」は価格が動くたびに、「終値(ローソク足確定後)」はローソク足が1本確定した瞬間だけ条件を判定します。</td></tr>
+          <tr><th>ロット方式</th><td><span class="code-inline">固定ロット</span> は常に同じロット数、<span class="code-inline">資金に応じたロット(%)</span> は口座資金に対する割合でロットを自動計算します。</td></tr>
+          <tr><th>ロット数</th><td>固定ロット方式の時の取引ロット数(初期値 0.01)。</td></tr>
+        </table>
+      </div>
+
+      <h3 id="sl-tp-trail">SL/TP・トレーリング</h3>
+      <div class="card">
+        <table>
+          <tr><th>SL(ストップロス)</th><td>チェックすると、指定pips逆行した時点で自動決済します。初期状態はオフです。</td></tr>
+          <tr><th>TP(テイクプロフィット)</th><td>チェックすると、指定pips順行した時点で自動決済します。初期状態はオフです。</td></tr>
+          <tr><th>トレール</th><td>チェックすると、指定pips以上の含み益が出た時点からトレーリングストップ(利益を追いかける決済ライン)が有効になります。「値」が開始pips、「幅」がストップを動かす間隔です。</td></tr>
+        </table>
+        <div class="note">開始・終了を固定pipsでなく「条件式」で指定したい場合は、<a href="#trailing-condition">条件式トレーリング</a>を参照してください。</div>
+      </div>
+
+      <h3 id="positions">同時保有数・両建て・他EA管理</h3>
+      <div class="card">
+        <table>
+          <tr><th>同時最大保有数(買い/売り)</th><td>それぞれ何ポジションまで同時に持てるかを設定します。0を入れると無制限になります。</td></tr>
+          <tr><th>両建てを禁止する</th><td>チェックすると、買いと売りを同時に持たないようにします(片方がある間は逆方向のエントリーを行いません)。</td></tr>
+          <tr><th>他EAのポジションも管理</th><td>通常EAは「マジックナンバー」という識別タグで自分の注文だけを区別します。チェックを入れると、マジックナンバーによる区別をやめ、同じ通貨ペアの他のEA・手動注文もすべて自分の注文と同様に数えたり決済したりします。</td></tr>
+          <tr><th>他通貨ペアも管理</th><td>通常EAは自分が動いている通貨ペアの注文だけを管理します。チェックを入れると、他の通貨ペアの注文もまとめて管理対象にします。複数通貨ペアで同時に動かし、口座全体でポジション数を制限したい場合に使います。</td></tr>
+        </table>
+      </div>
+
+      <h3 id="nanpin">ナンピン設定</h3>
+      <div class="card">
+        <p>「ナンピン設定」ボタンから開く別ウィンドウで設定します。含み損時に、一定pips逆行するたびに追加エントリーする機能です。</p>
+        <table>
+          <tr><th>買い/売り共通にする</th><td>オンにすると買い・売りで同じステップ設定を使います。オフにすると、買いと売りをそれぞれ個別に設定できます(競合製品にはない特長です)。</td></tr>
+          <tr><th>ステップ(pips・ロット倍率)</th><td>「1回目は20pips逆行でロット1.5倍」のように、ステップごとにpips幅とロット倍率を設定できます。「+ ステップを追加」で何段階でも増やせます。</td></tr>
+        </table>
+        <div class="warn">ロット倍率を1より大きくすると、逆行するたびにロットが増えていきます。資金管理上リスクが高くなる設定のため、必ずデモ口座で十分に検証してから使ってください。</div>
+      </div>
+
+      <h3 id="advanced">安全装置・フィルター設定</h3>
+      <div class="card">
+        <p>普段は触らない設定を「安全装置・フィルター設定」ボタンの別ウィンドウにまとめています。</p>
+        <table>
+          <tr><th>スプレッドフィルター</th><td>スプレッドが指定pipsより広い時は取引しないようにします。</td></tr>
+          <tr><th>通貨ペアしばり</th><td>指定した通貨ペア以外では動作しないようにします(不正コピー対策)。</td></tr>
+          <tr><th>時間足しばり</th><td>指定した時間足(チャートの時間軸)以外では動作しないようにします。</td></tr>
+          <tr><th>取引可能な曜日・時間帯</th><td>曜日ごとのON/OFFと、取引可能な時間帯(何時から何時まで)を制限できます。</td></tr>
+          <tr><th>口座しばり</th><td>指定した口座番号(カンマ区切りで複数可)以外では動作しないようにします(不正コピー対策)。</td></tr>
+          <tr><th>スリッページ</th><td>注文時に許容する price のズレ幅(pips)です。</td></tr>
+          <tr><th>マジックナンバー</th><td>このEAの注文を識別するための固有番号です。同じ口座で複数のEAを動かす時に重複しないようにしてください。</td></tr>
+        </table>
+        <div class="note">通貨ペアしばり・時間足しばり・口座しばりは、買い手側のパラメーター画面から変更できないよう、コードに直接埋め込まれます(パラメーターとして表に出すと簡単に外されてしまうため)。</div>
+      </div>
+    </section>
+
+    <section id="indicators">
+      <h2>使用するインジケーター</h2>
+      <div class="card">
+        <p>MT4の標準インジケーターをほぼ全種類サポートしています。ドロップダウンから選んで「+ 追加」すると、パラメーター(期間・計算方式など)を1行で設定でき、以降のエントリー/決済条件で選べるようになります。</p>
+        <table>
+          <tr><th>トレンド系</th><td>移動平均線(MA)、ボリンジャーバンド、エンベロープ、パラボリックSAR、標準偏差、一目均衡表、アリゲーター</td></tr>
+          <tr><th>オシレーター系</th><td>RSI、MACD、ストキャスティクス、CCI、モメンタム、OsMA、WPR、DeMarker、RVI、ATR、MFI、BWMFI</td></tr>
+          <tr><th>ビル・ウィリアムズ系</th><td>AO、AC、フラクタル、ゲーター、Bears/Bulls Power</td></tr>
+          <tr><th>出来高系</th><td>Force Index、OBV、AD</td></tr>
+        </table>
+        <p>同じ種類のインジケーターを複数追加することもできます(例: 短期MAと長期MAを2つ設置してゴールデンクロスを判定するなど)。</p>
+      </div>
+    </section>
+
+    <section id="conditions">
+      <h2>条件エディタ(エントリー・決済)</h2>
+      <p>「<span class="badge buy">買いエントリー条件</span>」「<span class="badge sell">売りエントリー条件</span>」「買いポジション決済条件」「売りポジション決済条件」の4種類を、それぞれ「+ 条件を追加」で行を増やして組み立てます。複数行入れた場合、<span class="code-inline">AND</span>(全て成立)/<span class="code-inline">OR</span>(いずれか成立)のどちらで結合するかを選べます。行の下には、今設定している内容を日本語の文章(例: 「終値がRSI値より大きい」)でリアルタイム表示するので、組み立てながら意味を確認できます。</p>
+
+      <h3 id="operand-kinds">オペランドの種類(条件の左側・右側で選べるもの)</h3>
+      <div class="card">
+        <table>
+          <tr><th>インジケーター</th><td>追加済みのインジケーターの出力値を使います。時間足や通貨ペアを変えて参照することもできます。</td></tr>
+          <tr><th>価格</th><td>始値・高値・安値・終値・リアルタイム(現在の未確定値)から選べます。</td></tr>
+          <tr><th>固定値</th><td>数値を直接入力します。条件の「主語」としては使えず(「5が〜」という文が成立しないため)、右側専用です。</td></tr>
+          <tr><th>ポジション数</th><td>買い/売り/合計の、現在保有しているポジション数を条件に使えます(例: 「買いポジション数が0と等しい」)。</td></tr>
+        </table>
+        <div class="note">左側で価格やインジケーターを選ぶと、右側の初期値が「意味が成立しやすいもの」に自動調整されます(価格系の指標には価格、オシレーター系の指標には代表的な閾値、など)。</div>
+      </div>
+
+      <h3 id="operators">比較演算子</h3>
+      <div class="card">
+        <table>
+          <tr><td><span class="code-inline">&gt;</span> より大きい</td><td><span class="code-inline">&lt;</span> より小さい</td></tr>
+          <tr><td><span class="code-inline">&gt;=</span> 以上</td><td><span class="code-inline">&lt;=</span> 以下</td></tr>
+          <tr><td><span class="code-inline">==</span> 等しい</td><td></td></tr>
+          <tr><td>下から上に抜ける(ゴールデンクロス的な判定)</td><td>上から下に抜ける(デッドクロス的な判定)</td></tr>
+        </table>
+      </div>
+
+      <h3 id="multi-symbol">他通貨ペア・他時間足の参照</h3>
+      <div class="card">
+        <p>インジケーターを選んだ時、時間足は現在の時間足以外(M1〜MN1)も選べます。通貨ペアは「現在の通貨ペア」「他の通貨ペア」のタブで切り替え、「他の通貨ペア」を選んだ時だけ通貨ペア名の入力欄が表示されます。</p>
+        <div class="note">ブローカーによっては銘柄名にサフィックスが付く場合があります(例: USDJPY# や USDJPYm など、前後どちらのパターンもあり得ます)。入力した名前で見つからない場合、実際の銘柄一覧から部分一致するものを自動的に探して使うため、そのまま「USDJPY」とだけ入力すれば問題ありません。</div>
+      </div>
+
+      <h3 id="multi-block">複数エントリーブロック</h3>
+      <div class="card">
+        <p>「+ 買いエントリーを追加」「+ 売りエントリーを追加」ボタンから、それぞれ独立したエントリー条件のブロックを追加できます。ブロック同士は<span class="code-inline">OR</span>(どれか1つでも成立すればエントリー)で結合されるため、「保有数が0の時はこの条件、1の時は別のこの条件」というような、保有数に応じて全く違うロジックを組むこともできます(2つ目以降のブロックはヘッダーの「×このブロックを削除」で削除できます)。</p>
+      </div>
+
+      <h3 id="trailing-condition">条件式トレーリング</h3>
+      <div class="card">
+        <p>画面下部の「▶ トレーリング条件を表示(任意設定)」ボタンから開きます。トレーリングの開始・終了を固定pipsでなく、条件式(インジケーターや価格を使った条件)で指定できます。未設定の場合は、基本設定の固定pips設定のみで判定されます。</p>
+      </div>
+    </section>
+
+    <section id="ai-mode">
+      <h2>AI入力モード</h2>
+      <div class="card">
+        <p>「日本語でEAの内容を説明してください」欄に戦略を書いて「AI生成」ボタンを押すと、AIが自動でEAを組み立てます。</p>
+        <ul class="feature-list">
+          <li><strong>新規作成</strong>: チェックボックスをオフのまま生成すると、入力内容から新しいEAを1から組み立てます。この時、<strong>すでに基本設定で設定している内容(ロット・SL/TP・フィルターなど)は上書きされません</strong>。AIには戦略(条件・インジケーター)の部分だけを組み立ててもらうので、基本設定まで毎回日本語で説明し直す必要はありません。</li>
+          <li><strong>既存の内容を修正する</strong>: チェックボックスをオンにすると、今組み立てている内容に対して「金曜の午後は取引しないようにして」のような部分的な修正を指示できます。この場合は指示された内容(基本設定を含む)がそのまま反映されます。</li>
+        </ul>
+        <p>生成が完了すると、日本語で「どういうEAになったか」(使用インジケーター・エントリー/決済条件・基本設定を含む)をまとめた確認ウィンドウが自動的に表示されます。初心者の方でも、生成結果をコードを読まずに確認できます。</p>
+      </div>
+    </section>
+
+    <section id="preview">
+      <h2>プレビュー・保存・コンパイル確認</h2>
+      <div class="card">
+        <table>
+          <tr><th>コードを表示</th><td>右側にMQL4のソースコードをリアルタイムでプレビュー表示します(上級者向け)。</td></tr>
+          <tr><th>コンパイル確認</th><td>実際にMetaEditorでコンパイルして、エラーがないかその場で確認します。</td></tr>
+          <tr><th>MQ4として保存</th><td>生成したコードを.mq4ファイルとして保存します。MT4の「MQL4/Experts」フォルダに入れることで実際に使用できます。</td></tr>
+        </table>
+      </div>
+    </section>
+
+    <section id="backtest">
+      <h2>ワンボタンバックテスト</h2>
+      <div class="card">
+        <p>通貨ペア・時間足・期間・初期資金を指定して「バックテスト実行」を押すと、作成したEAをその場でコンパイルし、MT4のストラテジーテスターで検証します。</p>
+        <div class="note">ご利用のMT4環境(ブローカーのビルド)によっては、自動化に対応していない場合があります。その際は、コンパイル・配置まで自動で行った上で、最後の「スタート」ボタンだけ手動で押していただく形になります。</div>
+      </div>
+    </section>
+
+    <section id="faq">
+      <h2>よくあるトラブル</h2>
+      <div class="card">
+        <div class="faq-q">Q. AIでの生成・修正が「失敗」と表示される</div>
+        <div class="faq-a">A. インターネット接続を確認してください。それでも失敗する場合は、時間をおいて再度お試しください。</div>
+
+        <div class="faq-q">Q. バックテストで「MT4が見つかりません」と出る</div>
+        <div class="faq-a">A. 「MT4フォルダを指定」ボタンから、お使いのMT4のterminal.exeを直接選択してください(通常は「C:\Program Files (x86)\」以下にあります)。</div>
+
+        <div class="faq-q">Q. コンパイル確認でエラーが出る</div>
+        <div class="faq-a">A. 生成されたコードのプレビュー欄に、具体的なエラー内容が表示されます。条件の組み方を見直すか、AIの「既存の内容を修正する」モードで調整してみてください。</div>
+
+        <div class="faq-q">Q. 通貨ペア参照で入力した銘柄が見つからないと出る</div>
+        <div class="faq-a">A. ブローカーごとの銘柄名(サフィックス付きなど)を自動で探すようになっていますが、極端に特殊な命名の場合は、MT4の「気配値表示」で実際の銘柄名を確認し、その名前で入力してみてください。</div>
+      </div>
+    </section>
+
+    <section id="notice">
+      <h2>注意事項</h2>
+      <div class="warn">
+        <ul class="feature-list">
+          <li>生成されたEAは、必ずデモ口座で十分に検証してから実運用してください</li>
+          <li>本ソフトの利用によって生じた損失について、作者は責任を負いません</li>
+          <li>サポートなし・返金不可でお願いします</li>
+        </ul>
+      </div>
+    </section>
+
+    <footer>EA Designer &mdash; MT4自動売買EA作成ツール</footer>
+  </main>
+</div>
+</body>
+</html>
